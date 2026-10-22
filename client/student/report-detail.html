@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chi Tiết Phản Ánh | CSVC - TVU</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .timeline { border-left: 3px solid var(--tvu-yellow); margin: 20px 0 20px 15px; padding-left: 20px; }
+    .timeline-item { position: relative; margin-bottom: 20px; }
+    .timeline-item::before {
+      content: ''; position: absolute; left: -28px; top: 3px; width: 14px; height: 14px;
+      border-radius: 50%; background: #000; border: 2px solid var(--tvu-yellow);
+    }
+    .image-preview-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+    .image-preview-grid img { width: 140px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand"><i class="fa-solid fa-screwdriver-wrench"></i> CSVC - TVU</div>
+    <div class="nav-links">
+      <a href="dashboard.html"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</a>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 900px;">
+    <div class="card">
+      <div class="card-header-yellow" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 id="reportTitle"><i class="fa-solid fa-circle-info"></i> Chi tiết sự cố</h2>
+        <span class="badge" id="reportStatus" style="font-size: 13px;">...</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Mã tra cứu:</strong> <span id="reportCode" style="color: #b8860b; font-weight: bold;"></span></p>
+        <p><strong>Vị trí:</strong> <span id="reportLocation"></span></p>
+        <p><strong>Danh mục:</strong> <span id="reportCategory"></span></p>
+        <p><strong>Thời gian báo:</strong> <span id="reportTime"></span></p>
+        <p style="margin-top: 15px;"><strong>Nội dung phản ánh:</strong></p>
+        <div id="reportDesc" style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-top: 6px; line-height: 1.5;"></div>
+
+        <h4 style="margin-top: 25px;"><i class="fa-solid fa-images"></i> Hình ảnh đính kèm:</h4>
+        <div class="image-preview-grid" id="reportImages">
+          <p style="color: #888; font-size: 13px;">Không có hình ảnh đính kèm.</p>
+        </div>
+
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+
+        <h4><i class="fa-solid fa-timeline"></i> Lịch sử xử lý & Ghi chú tiến độ</h4>
+        <div class="timeline" id="reportTimeline">
+          <!-- Render lịch sử từ report_history -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    async function loadDetail() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const reportId = urlParams.get('id');
+      if (!reportId) return alert('Thiếu mã phản ánh!');
+
+      const res = await API.get(`/api/reports/${reportId}`);
+      if (res.success) {
+        const d = res.data;
+        document.getElementById('reportTitle').innerHTML = `<i class="fa-solid fa-circle-info"></i> ${d.title}`;
+        document.getElementById('reportCode').innerText = `#${d.code}`;
+        document.getElementById('reportLocation').innerText = `${d.building} - ${d.room}`;
+        document.getElementById('reportCategory').innerText = d.category_name;
+        document.getElementById('reportTime').innerText = new Date(d.created_at).toLocaleString('vi-VN');
+        document.getElementById('reportDesc').innerText = d.description;
+
+        const stBadge = document.getElementById('reportStatus');
+        stBadge.className = 'badge ' + (d.status === 'completed' ? 'badge-completed' : (d.status === 'in_progress' ? 'badge-progress' : 'badge-received'));
+        stBadge.innerText = d.status === 'completed' ? 'Hoàn thành' : (d.status === 'in_progress' ? 'Đang xử lý' : 'Đã tiếp nhận');
+
+        if (d.images && d.images.length > 0) {
+          const imgContainer = document.getElementById('reportImages');
+          imgContainer.innerHTML = d.images.map(img => `<a href="${img.image_path}" target="_blank"><img src="${img.image_path}" alt="Minh chứng"></a>`).join('');
+        }
+
+        const tl = document.getElementById('reportTimeline');
+        if (d.history && d.history.length > 0) {
+          tl.innerHTML = d.history.map(h => `
+            <div class="timeline-item">
+              <strong>${h.action}</strong> - <span style="font-size: 12px; color: #777;">${new Date(h.created_at).toLocaleString('vi-VN')}</span>
+              <p style="font-size: 13px; color: #444; margin-top: 4px;">Người thực hiện: <strong>${h.actor_name}</strong>. Ghi chú: ${h.note || 'Không có ghi chú'}</p>
+            </div>
+          `).join('');
+        } else {
+          tl.innerHTML = '<p style="color: #888; font-size: 13px;">Chưa có cập nhật tiến độ mới.</p>';
+        }
+      }
+    }
+    window.onload = loadDetail;
+  </script>
+</body>
+</html>

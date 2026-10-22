@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Cập Nhật Tiến Độ | CSVC - TVU</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand"><i class="fa-solid fa-wrench"></i> CSVC - TVU (Kỹ thuật)</div>
+    <div class="nav-links">
+      <a href="dashboard.html"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách công việc</a>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 800px;">
+    <div class="card">
+      <div class="card-header-yellow">
+        <h2><i class="fa-solid fa-screwdriver-wrench"></i> Báo Cáo Xử Lý Sự Cố</h2>
+        <p style="font-size: 13px; margin-top: 4px;">Cập nhật tình hình sửa chữa thực tế tại phòng học.</p>
+      </div>
+      <div class="card-body">
+        <form id="updateTaskForm">
+          <div class="form-group">
+            <label>Sự cố đang xử lý:</label>
+            <input type="text" id="taskTitle" class="form-control" readonly style="background: #e9ecef;">
+          </div>
+          <div class="form-group">
+            <label>Trạng thái công việc <span class="required">*</span></label>
+            <select id="status" class="form-control" required>
+              <option value="in_progress">Đang tiến hành sửa chữa</option>
+              <option value="completed">Đã hoàn thành sửa chữa (Nghiệm thu)</option>
+              <option value="rejected">Tạm hoãn / Chờ linh kiện thay thế</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ghi chú kết quả xử lý <span class="required">*</span></label>
+            <textarea id="note" class="form-control" rows="4" placeholder="Mô tả công việc đã làm (ví dụ: đã thay bóng đèn mới, cắm lại jack nguồn máy chiếu...)" required></textarea>
+          </div>
+
+          <button type="submit" class="btn-yellow">
+            <i class="fa-solid fa-floppy-disk"></i> Lưu kết quả cập nhật
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const reportId = urlParams.get('id');
+
+    async function initTask() {
+      if (!reportId) return alert('Không tìm thấy ID công việc!');
+      const res = await API.get(`/api/reports/${reportId}`);
+      if (res.success) {
+        document.getElementById('taskTitle').value = `#${res.data.code} - ${res.data.title} (${res.data.building})`;
+        document.getElementById('status').value = res.data.status;
+      }
+    }
+
+    document.getElementById('updateTaskForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        report_id: reportId,
+        status: document.getElementById('status').value,
+        note: document.getElementById('note').value
+      };
+
+      const res = await API.post('/api/tech/update', payload);
+      if (res.success) {
+        alert('Cập nhật tiến độ thành công!');
+        window.location.href = 'dashboard.html';
+      } else {
+        alert(res.message);
+      }
+    });
+
+    window.onload = initTask;
+  </script>
+</body>
+</html>

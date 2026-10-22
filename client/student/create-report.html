@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gửi Phản Ánh | CSVC - TVU</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand"><i class="fa-solid fa-screwdriver-wrench"></i> CSVC - TVU</div>
+    <div class="nav-links">
+      <a href="create-report.html"><i class="fa-solid fa-pen-to-square"></i> Gửi phản ánh</a>
+      <a href="../admin/reports.html"><i class="fa-solid fa-scale-balanced"></i> Khu vực Quản trị (Admin)</a>
+      <span>Xin chào, <strong id="displayName">Người dùng</strong> <span class="user-badge" id="displayRole">Sinh viên</span></span>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-header-yellow">
+        <h2><i class="fa-solid fa-triangle-exclamation"></i> Gửi Phản Ánh Sự Cố Cơ Sở Vật Chất</h2>
+        <p style="font-size: 13px; margin-top: 4px;">Nhập thông tin chi tiết thiết bị, khu vực bị hỏng hóc để nhà trường tiếp nhận và xử lý.</p>
+      </div>
+      <div class="card-body">
+        <form id="createReportForm">
+          <div class="form-group">
+            <label>Tiêu đề sự cố <span class="required">*</span></label>
+            <input type="text" id="title" class="form-control" placeholder="Ví dụ: Hỏng máy chiếu phòng A2.101, Chảy nước bồn rửa tay..." required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Khu vực / Tòa nhà <span class="required">*</span></label>
+              <select id="building" class="form-control" required>
+                <option value="">-- Chọn tòa nhà --</option>
+                <option value="Khu I - Tòa A">Khu I - Tòa A</option>
+                <option value="Khu I - Tòa B">Khu I - Tòa B</option>
+                <option value="Khu II - Tòa A2">Khu II - Tòa A2</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Phòng học / Địa điểm cụ thể <span class="required">*</span></label>
+              <input type="text" id="room" class="form-control" placeholder="Ví dụ: Phòng thực hành 3, Giảng đường B1..." required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Danh mục sự cố <span class="required">*</span></label>
+              <select id="category_id" class="form-control" required>
+                <option value="">-- Chọn loại hỏng hóc --</option>
+                <option value="1">Thiết bị dạy học</option>
+                <option value="2">Hệ thống nước</option>
+                <option value="3">Hệ thống điện - Đèn</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Mức độ ưu tiên</label>
+              <select id="priority" class="form-control">
+                <option value="medium">Bình thường</option>
+                <option value="high">Cao</option>
+                <option value="urgent">Khẩn cấp</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Mô tả chi tiết tình trạng hư hỏng <span class="required">*</span></label>
+            <textarea id="description" class="form-control" rows="4" placeholder="Mô tả cụ thể triệu chứng, vị trí hỏng để kỹ thuật viên mang đúng dụng cụ sửa chữa..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Hình ảnh minh chứng thực tế</label>
+            <input type="file" id="images" class="form-control" multiple accept="image/*">
+          </div>
+
+          <button type="submit" class="btn-yellow"><i class="fa-solid fa-paper-plane"></i> Gửi Phản Ánh Ngay</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user.fullname) {
+      document.getElementById('displayName').innerText = user.fullname;
+      document.getElementById('displayRole').innerText = user.role;
+    }
+
+    document.getElementById('createReportForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('title', document.getElementById('title').value);
+      formData.append('building', document.getElementById('building').value);
+      formData.append('room', document.getElementById('room').value);
+      formData.append('category_id', document.getElementById('category_id').value);
+      formData.append('priority', document.getElementById('priority').value);
+      formData.append('description', document.getElementById('description').value);
+
+      const files = document.getElementById('images').files;
+      for (let i = 0; i < files.length; i++) {
+        formData.append('images', files[i]);
+      }
+
+      const res = await API.post('/api/reports', formData, true);
+      if (res.success) {
+        alert(`Gửi phản ánh thành công! Mã của bạn là #${res.code}`);
+        document.getElementById('createReportForm').reset();
+      } else {
+        alert(res.message);
+      }
+    });
+  </script>
+</body>
+</html>

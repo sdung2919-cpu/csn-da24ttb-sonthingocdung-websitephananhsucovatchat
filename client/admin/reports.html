@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSVC - TVU | Quản lý & Phân công phản ánh</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="brand">
+      <i class="fa-solid fa-wrench"></i> CSVC - TVU (Quản trị)
+    </div>
+    <div class="nav-links">
+      <a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Tổng quan</a>
+      <a href="reports.html" style="text-decoration: underline;"><i class="fa-solid fa-list-check"></i> Quản lý phản ánh</a>
+      <a href="../index.html"><i class="fa-solid fa-house"></i> Về trang chủ</a>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 1200px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <div>
+        <h2><i class="fa-solid fa-gears" style="color: var(--primary-yellow);"></i> Quản lý & Điều phối sự cố cơ sở vật chất</h2>
+        <p style="font-size: 13px; color: #666;">Tiếp nhận thông tin, phân loại và phân công nhân viên kỹ thuật xử lý.</p>
+      </div>
+      <div>
+        <span class="badge" style="background-color: var(--primary-yellow); color: #000; padding: 8px 16px; font-size: 14px;">
+          Tổng số: <strong id="totalCount">0</strong>
+        </span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tiêu đề & Vị trí</th>
+              <th>Người phản ánh</th>
+              <th>Danh mục</th>
+              <th>Trạng thái</th>
+              <th>Kỹ thuật viên phụ trách</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="reportsTableBody">
+            <!-- Dữ liệu được nạp động qua JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/admin.js"></script>
+</body>
+</html>

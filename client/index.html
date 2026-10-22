@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSVC - TVU | Trang chủ hệ thống tiếp nhận phản ánh</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .hero-banner {
+      background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1200&auto=format&fit=crop') center/cover;
+      color: #fff;
+      padding: 70px 20px;
+      text-align: center;
+      border-radius: 8px;
+      margin-bottom: 35px;
+    }
+    .hero-banner h1 { font-size: 32px; margin-bottom: 15px; color: var(--tvu-yellow); }
+    .hero-banner p { font-size: 16px; max-width: 700px; margin: 0 auto 25px; line-height: 1.6; }
+    .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 35px; }
+    .process-card { background: #fff; padding: 25px 20px; border-radius: 8px; text-align: center; box-shadow: var(--card-shadow); border-top: 4px solid var(--tvu-yellow); }
+    .process-card i { font-size: 32px; color: #1a1a1a; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="brand">
+      <i class="fa-solid fa-graduation-cap"></i> CSVC - TVU
+    </div>
+    <div class="nav-links">
+      <a href="index.html" style="font-weight: bold;"><i class="fa-solid fa-house"></i> Trang chủ</a>
+      <a href="login.html"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập</a>
+      <a href="register.html"><i class="fa-solid fa-user-plus"></i> Đăng ký</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="hero-banner">
+      <h1>HỆ THỐNG PHẢN ÁNH SỰ CỐ CƠ SỞ VẬT CHẤT</h1>
+      <p>Số hóa quy trình tiếp nhận, quản lý và bảo trì trang thiết bị học tập trong toàn trường. Đảm bảo môi trường học tập an toàn, hiện đại và minh bạch.</p>
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+        <a href="login.html" class="btn-yellow" style="width: auto; text-decoration: none; padding: 12px 28px;">
+          <i class="fa-solid fa-paper-plane"></i> Gửi phản ánh ngay
+        </a>
+        <a href="login.html" class="btn-yellow" style="width: auto; text-decoration: none; padding: 12px 28px; background: #fff; color: #000;">
+          <i class="fa-solid fa-magnifying-glass"></i> Tra cứu tiến độ
+        </a>
+      </div>
+    </div>
+
+    <h2 style="text-align: center; margin-bottom: 25px;"><i class="fa-solid fa-arrows-spin" style="color: var(--tvu-yellow);"></i> Quy trình xử lý sự cố</h2>
+    <div class="process-grid">
+      <div class="process-card">
+        <i class="fa-solid fa-camera"></i>
+        <h3>1. Gửi phản ánh</h3>
+        <p style="font-size: 13px; color: #666; margin-top: 8px;">Chụp ảnh sự cố, chọn vị trí giảng đường và mô tả hiện trạng.</p>
+      </div>
+      <div class="process-card">
+        <i class="fa-solid fa-user-shield"></i>
+        <h3>2. BQL tiếp nhận</h3>
+        <p style="font-size: 13px; color: #666; margin-top: 8px;">Ban quản lý xác minh, phân loại mức độ ưu tiên và giao việc cho kỹ thuật.</p>
+      </div>
+      <div class="process-card">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+        <h3>3. Sửa chữa</h3>
+        <p style="font-size: 13px; color: #666; margin-top: 8px;">Kỹ thuật viên tiếp nhận công việc, đến hiện trường xử lý và cập nhật tiến độ.</p>
+      </div>
+      <div class="process-card">
+        <i class="fa-solid fa-circle-check"></i>
+        <h3>4. Hoàn tất</h3>
+        <p style="font-size: 13px; color: #666; margin-top: 8px;">Ghi nhận kết quả sửa chữa, nghiệm thu và lưu trữ lịch sử bảo trì.</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

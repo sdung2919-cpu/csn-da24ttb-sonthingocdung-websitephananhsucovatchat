@@ -1,0 +1,4 @@
+node_modules/
+uploads/incident-*
+.env
+.DS_Store

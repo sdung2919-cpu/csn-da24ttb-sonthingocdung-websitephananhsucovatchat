@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Lịch sử phản ánh | CSVC - TVU</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand"><i class="fa-solid fa-screwdriver-wrench"></i> CSVC - TVU</div>
+    <div class="nav-links">
+      <a href="dashboard.html" style="font-weight: bold;"><i class="fa-solid fa-table-list"></i> Phản ánh của tôi</a>
+      <a href="create-report.html"><i class="fa-solid fa-pen-to-square"></i> Gửi phản ánh mới</a>
+      <a href="../login.html" onclick="localStorage.clear()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</a>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 1100px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <div>
+        <h2><i class="fa-solid fa-clock-rotate-left" style="color: var(--tvu-yellow);"></i> Các sự cố bạn đã gửi</h2>
+        <p style="font-size: 13px; color: #666;">Theo dõi tiến trình xử lý và phản hồi từ Ban quản lý & Kỹ thuật viên.</p>
+      </div>
+      <a href="create-report.html" class="btn-yellow" style="width: auto; text-decoration: none; padding: 10px 20px; font-size: 14px;">
+        <i class="fa-solid fa-plus"></i> Báo sự cố mới
+      </a>
+    </div>
+
+    <div class="card">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Mã phản ánh</th>
+            <th>Tiêu đề & Vị trí</th>
+            <th>Danh mục</th>
+            <th>Ngày gửi</th>
+            <th>Trạng thái</th>
+            <th>Chi tiết</th>
+          </tr>
+        </thead>
+        <tbody id="studentReportList">
+          <!-- Render động -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    async function loadMyReports() {
+      const res = await API.get('/api/reports');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (res.success) {
+        const tbody = document.getElementById('studentReportList');
+        tbody.innerHTML = '';
+        
+        // Lọc các phản ánh thuộc người dùng hiện tại (hoặc hiển thị tất cả nếu chưa đăng nhập cứng)
+        const myReports = res.data.filter(r => !user.id || r.sender_name === user.fullname || user.role === 'admin');
+
+        if (myReports.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 25px; color: #888;">Bạn chưa gửi phản ánh sự cố nào.</td></tr>';
+          return;
+        }
+
+        myReports.forEach(r => {
+          let badge = '<span class="badge badge-received">Tiếp nhận</span>';
+          if (r.status === 'in_progress' || r.status === 'assigned') badge = '<span class="badge badge-progress">Đang xử lý</span>';
+          if (r.status === 'completed') badge = '<span class="badge badge-completed">Hoàn thành</span>';
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>#${r.code}</strong></td>
+            <td>
+              <strong style="color: #b8860b;">${r.title}</strong><br>
+              <small style="color: #666;"><i class="fa-solid fa-location-dot"></i> ${r.location_display}</small>
+            </td>
+            <td><span class="badge badge-category">${r.category_name}</span></td>
+            <td>${new Date(r.created_at).toLocaleDateString('vi-VN')}</td>
+            <td>${badge}</td>
+            <td>
+              <a href="report-detail.html?id=${r.id}" class="btn-yellow" style="width: auto; padding: 6px 12px; font-size: 12px; text-decoration: none; display: inline-flex;">
+                <i class="fa-solid fa-eye"></i> Xem
+              </a>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    }
+    window.onload = loadMyReports;
+  </script>
+</body>
+</html>

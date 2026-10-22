@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Công Việc Được Giao | CSVC - TVU</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand"><i class="fa-solid fa-wrench"></i> CSVC - TVU (Kỹ thuật)</div>
+    <div class="nav-links">
+      <a href="dashboard.html" style="font-weight: bold;"><i class="fa-solid fa-list-check"></i> Công việc của tôi</a>
+      <a href="../login.html" onclick="localStorage.clear()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</a>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 1100px;">
+    <h2><i class="fa-solid fa-toolbox" style="color: var(--tvu-yellow);"></i> Nhiệm vụ sửa chữa được phân công</h2>
+    <p style="font-size: 13px; color: #666; margin-bottom: 20px;">Tiếp nhận, đến hiện trường kiểm tra và cập nhật kết quả xử lý thiết bị.</p>
+
+    <div class="card">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Mã</th>
+            <th>Tiêu đề sự cố</th>
+            <th>Vị trí</th>
+            <th>Yêu cầu từ Admin</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="techTaskList">
+          <!-- Nạp động qua JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    async function loadTasks() {
+      const res = await API.get('/api/tech/tasks');
+      if (res.success) {
+        const tbody = document.getElementById('techTaskList');
+        tbody.innerHTML = '';
+
+        if (res.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 25px; color: #888;">Hiện tại bạn chưa có công việc nào được phân công.</td></tr>';
+          return;
+        }
+
+        res.data.forEach(t => {
+          let badge = '<span class="badge badge-received">Mới giao</span>';
+          if (t.status === 'in_progress' || t.status === 'assigned') badge = '<span class="badge badge-progress">Đang xử lý</span>';
+          if (t.status === 'completed') badge = '<span class="badge badge-completed">Đã xong</span>';
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>#${t.code}</strong></td>
+            <td><strong>${t.title}</strong></td>
+            <td><i class="fa-solid fa-location-dot" style="color: #666;"></i> ${t.location_display}</td>
+            <td style="font-size: 13px; color: #555;">${t.assign_note || 'Không có ghi chú thêm'}</td>
+            <td>${badge}</td>
+            <td>
+              <a href="update-task.html?id=${t.id}" class="btn-yellow" style="width: auto; padding: 6px 14px; font-size: 12px; text-decoration: none; display: inline-flex;">
+                <i class="fa-solid fa-pen"></i> Cập nhật
+              </a>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    }
+    window.onload = loadTasks;
+  </script>
+</body>
+</html>
